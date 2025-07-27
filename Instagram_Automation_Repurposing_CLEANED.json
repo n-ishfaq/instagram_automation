@@ -1,0 +1,47 @@
+{
+  "name": "Instagram Automation & Repurposing",
+  "nodes": [
+    {
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_SHEETS_ACCOUNT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_ACCOUNT",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "credentials": {
+        "groqApi": {
+          "id": "YOUR_GROQ_API",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_API",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "headerParameters": {
+        "parameters": [
+          {
+            "name": "Authorization",
+            "value": "YOUR_API"
+          }
+        ]
+      }
+    }
+  ]
+}
