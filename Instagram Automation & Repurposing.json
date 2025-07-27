@@ -1,0 +1,3644 @@
+{
+  "name": "Instagram Automation & Repurposing",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g",
+          "mode": "list",
+          "cachedResultName": "Instagram_Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 575853952,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit#gid=575853952"
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        704,
+        80
+      ],
+      "id": "4dafec5d-6a9b-46d4-b3c6-762a151d7221",
+      "name": "Get Data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "avZtFTxBgelyc70W",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Sort all items by Comments in descending order\nconst sortedItems = items.sort((a, b) => {\n  const aLikes = parseInt(a.json.Follower || '0', 10); // Convert to integer\n  const bLikes = parseInt(b.json.Follower || '0', 10);\n  return bLikes - aLikes; // Sort: highest likes first\n});\n\n\nreturn sortedItems.slice(0, 5);\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        928,
+        80
+      ],
+      "id": "5085eb4c-5eb6-4cc9-b4a5-ce2e867e074d",
+      "name": "Top Follower"
+    },
+    {
+      "parameters": {
+        "jsCode": "const topItems = $input.all();\n\nconst users = topItems.map(item => {\n  return {\n    Profile: item.json.InstagramUrl,\n    Followers: item.json.Follower,\n    Username: item.json.Username,\n    Totalpost: item.json[\"Total post\"],\n    lastpost: item.json.Lastpost ? JSON.parse(item.json.post1) : null\n  };\n});\n\n// Return a single item with all user profiles in one JSON array\nreturn [\n  {\n    json: {\n      users: users\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        928,
+        480
+      ],
+      "id": "f237ce8f-c29c-4728-b4b4-87d182fa1c59",
+      "name": "Last post"
+    },
+    {
+      "parameters": {
+        "jsCode": "const topItems = $input.all();\n\nconst users = topItems.map(item => {\n  return {\n    Profile: item.json.InstagramUrl,\n    Followers: item.json.Follower,\n    Username: item.json.Username,\n    Totalpost: item.json[\"Total post\"],\n    post1: item.json.post1 ? JSON.parse(item.json.post1) : null,\n    post2: item.json.post1 ? JSON.parse(item.json.post2) : null,\n    post3: item.json.post1 ? JSON.parse(item.json.post3) : null,\n    post4: item.json.post1 ? JSON.parse(item.json.post4) : null,\n    post5: item.json.post1 ? JSON.parse(item.json.post5) : null,\n    \n    \n  };\n});\n\n// Return a single item with all user profiles in one JSON array\nreturn [\n  {\n    json: {\n      Reply: users\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        928,
+        288
+      ],
+      "id": "edf7d0f2-26c3-4699-ae87-e141b38ca549",
+      "name": "Like Post"
+    },
+    {
+      "parameters": {
+        "jsCode": "const topItems = $input.all();\n\nlet htmlMessage = \"\";\n\ntopItems.forEach((item, index) => {\n  const profile = item.json.InstagramUrl || item.json.Profile || \"N/A\";\n  const followers = item.json.Follower || item.json.Followers || \"N/A\";\n  const username = item.json.Username || \"N/A\";\n  const totalPosts = item.json[\"Total post\"] || item.json.Totalpost || \"N/A\";\n  const bio = item.json.Bio || \"N/A\";\n\n  htmlMessage += `<b>${index + 1}. ${username}</b>\\n`;\n  htmlMessage += `🔗 <b>Profile:</b> <a href=\"${profile}\">${profile}</a>\\n`;\n  htmlMessage += `👥 <b>Followers:</b> ${followers}\\n`;\n  htmlMessage += `📝 <b>Total Posts:</b> ${totalPosts}\\n`;\n  htmlMessage += `🧬 <b>Bio:</b> ${bio}\\n\\n`;\n});\n\nreturn [\n  {\n    json: {\n      text: htmlMessage\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1152,
+        80
+      ],
+      "id": "4fbf7ee4-7d19-4882-adcb-ea726e39aaf0",
+      "name": "Top 10  Follower"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -736,
+        64
+      ],
+      "id": "f77f4f7f-43ea-4583-a180-bf0456fc11b7",
+      "name": "Tele",
+      "webhookId": "84a3d619-2a23-4434-aeae-8589e6ae90c0",
+      "credentials": {
+        "telegramApi": {
+          "id": "Rf1RtOQgG7OaJv1K",
+          "name": "Telegram account Noman"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        1392
+      ],
+      "id": "463a197c-38fa-4f3b-a87b-b101cc9091e6",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "xLSQRABRBCRfmWjf",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1568,
+        304
+      ],
+      "id": "6220a841-b89d-41bf-bc62-5963c405f059",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1568,
+        512
+      ],
+      "id": "05ca0545-3e09-4c47-8bc8-5d2d74a21f85",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1568,
+        112
+      ],
+      "id": "2e9c007f-0294-462c-b44a-a5a846a81a95",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an Instagram Automation agent.That can help user to find user using hashtag,find top follower most like post. and create summary of post.\nSo user can ask for help you just reply in text and tell i am providing this services.\nuserinput:  {{ $('Tele').item.json.message.text }}\nBehave Like An Full Agnet.",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1488,
+        1552
+      ],
+      "id": "e68d5508-747c-4b84-ace9-3549f9dd6664",
+      "name": "Help Full AI Reply"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Tele').item.json.message.chat.id }}",
+        "text": "={{ $json.text }}",
+        "replyMarkup": "forceReply",
+        "forceReply": {
+          "force_reply": true
+        },
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1792,
+        304
+      ],
+      "id": "7ecdb35d-3c11-453c-ae62-82d36f86dc47",
+      "name": "Response Like",
+      "webhookId": "28ff9e1d-6dec-4917-b39e-ffab05923456",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "Rf1RtOQgG7OaJv1K",
+          "name": "Telegram account Noman"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const topItems = $input.all();\n\nlet htmlMessage = \"\";\n\ntopItems.forEach((item, index) => {\n  const influencer = item.json.Reply[0]; // access nested object\n\n  const profile = influencer.Profile || \"N/A\";\n  const followers = influencer.Followers || \"N/A\";\n  const username = influencer.Username || \"N/A\";\n  const totalPosts = influencer.Totalpost || \"N/A\";\n\n  htmlMessage += `👤 <b>Username:</b> ${username}\\n`;\n  htmlMessage += `🔗 <b>Profile:</b> <a href=\"${profile}\">${profile}</a>\\n`;\n  htmlMessage += `👥 <b>Followers:</b> ${followers}\\n`;\n  htmlMessage += `📝 <b>Total Posts:</b> ${totalPosts}\\n`;\n  htmlMessage += `📸 <b>Top 5 Posts:</b>\\n`;\n\n  for (let i = 1; i <= 5; i++) {\n    const post = influencer[`post${i}`];\n    if (post) {\n      htmlMessage += `\\n<b>Post ${i}:</b> <a href=\"${post.url}\">View Post</a>\\n`;\n      htmlMessage += `🔗 <b>Url:</b> ${post.url}\\n`;\n      htmlMessage += `❤️ <b>Likes:</b> ${post.likes} | 💬 <b>Comments:</b> ${post.comments}\\n`;\n    }\n  }\n\n  htmlMessage += `\\n\\n`;\n});\n\nreturn [\n  {\n    json: {\n      text: htmlMessage\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1152,
+        288
+      ],
+      "id": "8de3284f-bc1d-404a-ba2f-49c1a7b7d787",
+      "name": "Clean"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Tele').item.json.message.chat.id }}",
+        "text": "={{ $json.text }}",
+        "replyMarkup": "forceReply",
+        "forceReply": {
+          "force_reply": true
+        },
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1792,
+        112
+      ],
+      "id": "10163de2-0acb-4d83-8f2d-a455c457aeff",
+      "name": "Response Follower",
+      "webhookId": "28ff9e1d-6dec-4917-b39e-ffab05923456",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "Rf1RtOQgG7OaJv1K",
+          "name": "Telegram account Noman"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Tele').item.json.message.chat.id }}",
+        "text": "={{ $json.output.text }}",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2640,
+        1552
+      ],
+      "id": "ce7ce934-f7c6-47c6-b579-3fdafb0a7935",
+      "name": "Response Message",
+      "webhookId": "28ff9e1d-6dec-4917-b39e-ffab05923456",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "executeOnce": false,
+      "alwaysOutputData": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "Rf1RtOQgG7OaJv1K",
+          "name": "Telegram account Noman"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const topItems = $input.all();\n\nlet htmlMessage = \"\";\n\ntopItems.forEach((item) => {\n  const influencer = item.json.users[0]; // updated from 'Reply[0]'\n\n  const profile = influencer.Profile || \"N/A\";\n  const followers = influencer.Followers || \"N/A\";\n  const username = influencer.Username || \"N/A\";\n  const totalPosts = influencer.Totalpost || \"N/A\";\n\n  htmlMessage += `👤 <b>Username:</b> ${username}\\n`;\n  htmlMessage += `🔗 <b>Profile:</b> <a href=\"${profile}\">${profile}</a>\\n`;\n  htmlMessage += `👥 <b>Followers:</b> ${followers}\\n`;\n  htmlMessage += `📝 <b>Total Posts:</b> ${totalPosts}\\n`;\n\n  const post = influencer.lastpost;\n  if (post) {\n    htmlMessage += `\\n📸 <b>Last Post:</b> <a href=\"${post.url}\">View Post</a>`;\n    htmlMessage += `\\n🔗 <b>Url:</b> ${post.url}\\n`;\n    htmlMessage += `❤️ <b>Likes:</b> ${post.likes} | 💬 <b>Comments:</b> ${post.comments}\\n`;\n  }\n\n  htmlMessage += `\\n\\n`;\n});\n\nreturn [\n  {\n    json: {\n      text: htmlMessage\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1152,
+        480
+      ],
+      "id": "48869629-c74f-498e-b8c0-6d37af512ce1",
+      "name": "Clean and formate"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "={{ $json.text }}",
+        "replyMarkup": "forceReply",
+        "forceReply": {
+          "force_reply": true
+        },
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1792,
+        512
+      ],
+      "id": "d5f3a4ed-94ad-4b4c-bdb4-637855719e2e",
+      "name": "Telegram",
+      "webhookId": "ad5ef867-913a-4e16-a64d-3963b601156e",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "Rf1RtOQgG7OaJv1K",
+          "name": "Telegram account Noman"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        1392
+      ],
+      "id": "506a52c9-6a6b-4f6b-a8a9-67efee389c7b",
+      "name": "Groq Chat Model2",
+      "credentials": {
+        "groqApi": {
+          "id": "xLSQRABRBCRfmWjf",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $('Tele').item.json.message.text }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "follower Like   Latest",
+              "description": "=This look like top follower,top Like post and Latest  post of that user."
+            },
+            {
+              "category": "Repurposing",
+              "description": "=This look like Repurposing,Summary,new post,generate this post again or like transcribing the video. "
+            },
+            {
+              "category": "welcome",
+              "description": "This message is look like Hy,Hello.or welcome message."
+            },
+            {
+              "category": "Search profile",
+              "description": "=This message Look like scraping the user profile by specific username of the acc. "
+            },
+            {
+              "category": "Unlimted profile",
+              "description": "This message look like, Search profile or posts according to this topic or hashtag. \n\nFor e.g Hey scrape #aiagents videos"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        -368,
+        288
+      ],
+      "id": "596fafa4-97a8-4cce-94b0-3275fec2df2e",
+      "name": "Category",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "content": "# Sending Reply Back\n",
+        "height": 700,
+        "width": 1400,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1440,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "8cfe911c-92df-4276-a685-f716d2ef54db",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# Reply Welcome message \n",
+        "height": 260,
+        "width": 1400,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1440,
+        1472
+      ],
+      "typeVersion": 1,
+      "id": "69b13a91-5879-43cd-96f3-849aa5989325",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Top Follower | Like | Latest Post\n",
+        "height": 700,
+        "width": 1420,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "5b64ee5d-bec1-4378-9df7-4ba439bbb0bf",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"text\": \"\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -704,
+        1744
+      ],
+      "id": "c5349ea8-184e-47fb-860a-28864d57ed3c",
+      "name": "OutPut"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        1728
+      ],
+      "id": "ad7ee045-642b-42cf-b694-40f52ed43e96",
+      "name": "Model",
+      "credentials": {
+        "groqApi": {
+          "id": "xLSQRABRBCRfmWjf",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Generating Transcribe\n",
+        "height": 620,
+        "width": 1420,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        720
+      ],
+      "typeVersion": 1,
+      "id": "ab8bb43c-fa75-4d77-83a7-ff1136eababc",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"url\": \"\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -576,
+        1568
+      ],
+      "id": "f1125498-5e8f-413e-9b7b-70ddeb46f965",
+      "name": "OUTPUT"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        1568
+      ],
+      "id": "af93985a-8569-4247-9c4c-7f9a99be869e",
+      "name": "Groq Model",
+      "credentials": {
+        "groqApi": {
+          "id": "xLSQRABRBCRfmWjf",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "binaryPropertyName": "=data",
+        "options": {
+          "language": "en"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        128,
+        1072
+      ],
+      "id": "bc85dfbe-e743-4398-98a3-663d59345d3f",
+      "name": "Transcribe",
+      "credentials": {
+        "openAiApi": {
+          "id": "I6rsRA15Er4Tklj4",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"repurposed_script\": \"script\",\n  \"repurposed_caption\": \"caption\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -304,
+        1568
+      ],
+      "id": "b0ccfb76-eb5f-4823-ac08-11ef968784bb",
+      "name": "Output"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -448,
+        1568
+      ],
+      "id": "26f41a9b-640d-43da-8a26-127f126e174f",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "I6rsRA15Er4Tklj4",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an AI Assistant:\nuserinput:  {{ $json.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "you are an video-script repurposing agent with a focus on engagement and clear\n1. Preserve the original voice, pacing, and overall length.\n2. Improve upon the original script for greater flow, clarity, concision, and boost storytelling.\n3. Keep all proper nouns, product names, and branded terms unchanged.\n4. Ensure that the rewritten script always retains 1-2 key insights per minute (approx).\n5. Structure your output with:\na. Clear, concise, and logical flow. Well-organized for ease of use.\nb. Short lines or micro-paragraphs for each beat.\nc. Single, bold words to emphasize key ideas in each micro-para.\n6. Finally, craft a concise caption (3-5 lines) that teases the video's main insight and incites interaction.\nWhen you actually repurpose, simply drop in the revised script-no literary placeholders or template headings.\n\nConstraints:\n\nEnsure the original script and the repurposed script differ and are not exactly the same.\nInput is 100%\n\n\"repurposed_script\": \"script\",\n\"repurposed_caption\": \"caption\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        304,
+        1072
+      ],
+      "id": "e999dbc1-55a6-461f-acf2-b93a16bc8640",
+      "name": "Transcribe generater"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.videoUrl }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        832,
+        848
+      ],
+      "id": "c92c1161-b6b4-4a93-803e-83e7af26f4dd",
+      "name": "Download Video"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "input.mp4",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1008,
+        848
+      ],
+      "id": "fbee1566-fe35-4807-ae58-5d4b278dc486",
+      "name": "Write"
+    },
+    {
+      "parameters": {
+        "fileSelector": "input.mp4",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        848
+      ],
+      "id": "b29c5d6d-df4e-42fe-b78d-adedbefb2b9a",
+      "name": "Read"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract only the exact URL from the following user message. \nReturn nothing else — no text, no explanation, just the raw URL.\n\nInput: {{ $('Tele').item.json.message.text }}\n\nRequire output in this formate\n{\n\"url\":\"\"\n}\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        128,
+        848
+      ],
+      "id": "4a8c2804-d38c-4ace-9a47-5704586bf319",
+      "name": "URL Provider"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first();\nreturn [\n  {\n    json: {\n      \"maxRequestRetries\": 10,\n      \"proxy\": {\n        \"useApifyProxy\": true\n      },\n      \"startUrls\": [\n        {\n          url: item.json.output.url,\n          method: \"GET\"\n        }\n      ]\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        848
+      ],
+      "id": "cc614adf-7768-4825-b238-9b47bf06ef67",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/l5Rb0b8v9jFW4VrWh/run-sync-get-dataset-items",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Your APi"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        640,
+        848
+      ],
+      "id": "b8a20e6a-3667-4ac7-9fcf-152a941e2bda",
+      "name": "Downloading Posts"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g",
+          "mode": "list",
+          "cachedResultName": "Instagram_Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 596946643,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit#gid=596946643"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('ID__using_to_match_', ``, 'string') }}",
+            "Username": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Username', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Username",
+              "displayName": "Username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        -576,
+        1392
+      ],
+      "id": "5e4e0852-d431-4f75-ba4a-bb9e1a88bdc9",
+      "name": "Update",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "avZtFTxBgelyc70W",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g",
+          "mode": "list",
+          "cachedResultName": "Instagram_Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 596946643,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit#gid=596946643"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ID",
+              "lookupValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('values0_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        -464,
+        1392
+      ],
+      "id": "ea6ad7ee-251c-48ff-ae0b-4c6f834d4cea",
+      "name": "Get",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "avZtFTxBgelyc70W",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(user => {\n  const posts = user.json.latestPosts || [];\n\n  // Sort the user's posts by likesCount descending\n  const top5 = posts\n    .sort((a, b) => b.likesCount - a.likesCount)\n    .slice(0, 5);\n\n  // Attach user info and top 5 posts\n  return {\n    json: {\n      userId: user.json.userId, // Or use username, etc.\n      username: user.json.username, // Or use username, etc.\n      top5Posts: top5,\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        1632
+      ],
+      "id": "4b115bb2-1cc1-49be-9456-25be03e1ae2c",
+      "name": "Top like post1"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nreturn items.map(item => {\n  const data = item.json;\n  const result = {\n    username: data.username,\n  };\n\n  for (let i = 0; i < 5; i++) {\n    const post = data.top5Posts[i] || {};\n    result[`post${i + 1}`] = {\n      url: post.url || '',\n      likes: post.likesCount || 0,\n      comments: post.commentsCount || 0\n    };\n  }\n\n  return { json: result };});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        928,
+        1632
+      ],
+      "id": "99e375bf-112a-4970-8c4a-d2e45804a213",
+      "name": "Post seprating1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nfor (const item of items) {\n  const posts = item.json.latestPosts || [];\n\n  if (!posts.length) {\n    item.json.lastPost = null;\n    continue;\n  }\n\n  // Find the latest post using ISO `timestamp`\n  const lastPost = posts.reduce((latest, current) => {\n    return new Date(current.timestamp) > new Date(latest.timestamp) ? current : latest;\n  });\n\n  // Save it in the item's JSON\n  item.json.lastPost = lastPost;\n}\n\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        1824
+      ],
+      "id": "c6ef8bb9-e48d-416e-8221-6fcf7bafc745",
+      "name": "Getting post1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n  const posts = item.json.latestPosts || [];\n  const latestPost = posts.reduce((a, b) =>\n    new Date(a.timestamp) > new Date(b.timestamp) ? a : b\n  );\n\n  const details = {\n    url: latestPost.url,\n    likeCount: latestPost.likesCount,\n    commentCount: latestPost.commentsCount\n  };\n\n  return {\n    json: {\n      username: item.json.username,\n      latestPostDetails: JSON.stringify(details)\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        928,
+        1824
+      ],
+      "id": "a2117d09-9203-4648-9b21-b20aac2d9ef5",
+      "name": "Last post2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/dSCLg0C3YEZ83HzYX/run-sync-get-dataset-items",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Your API"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        1632
+      ],
+      "id": "47f1f54a-5b26-4568-8ab8-84ca79c98038",
+      "name": "Searching specific"
+    },
+    {
+      "parameters": {
+        "content": "# Searching Specific User\n",
+        "height": 700,
+        "width": 1420,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        1360
+      ],
+      "typeVersion": 1,
+      "id": "cf691eac-6a64-4342-8ea1-c823b0681726",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g",
+          "mode": "list",
+          "cachedResultName": "Instagram_Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 575853952,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit#gid=575853952"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Username": "={{ $json.username }}",
+            "post1": "={{ $json.post1 }}",
+            "post2": "={{ $json.post2 }}",
+            "post3": "={{ $json.post3 }}",
+            "post4": "={{ $json.post4 }}",
+            "post5": "={{ $json.post5 }}"
+          },
+          "matchingColumns": [
+            "Username"
+          ],
+          "schema": [
+            {
+              "id": "Username",
+              "displayName": "Username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Bio",
+              "displayName": "Bio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "FullName",
+              "displayName": "FullName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "InstagramUrl",
+              "displayName": "InstagramUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Follower",
+              "displayName": "Follower",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "follow",
+              "displayName": "follow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Lastpost",
+              "displayName": "Lastpost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Total post",
+              "displayName": "Total post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post1",
+              "displayName": "post1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "post2",
+              "displayName": "post2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "post3",
+              "displayName": "post3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "post4",
+              "displayName": "post4",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "post5",
+              "displayName": "post5",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1152,
+        1632
+      ],
+      "id": "a57dedc1-88e7-4a74-99c0-8533e0ca086a",
+      "name": "Update posts",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "avZtFTxBgelyc70W",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g",
+          "mode": "list",
+          "cachedResultName": "Instagram_Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 575853952,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit#gid=575853952"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Username": "={{ $json.username }}",
+            "Lastpost": "={{ $json.latestPostDetails }}"
+          },
+          "matchingColumns": [
+            "Username"
+          ],
+          "schema": [
+            {
+              "id": "Username",
+              "displayName": "Username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Bio",
+              "displayName": "Bio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "FullName",
+              "displayName": "FullName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "InstagramUrl",
+              "displayName": "InstagramUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Follower",
+              "displayName": "Follower",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "follow",
+              "displayName": "follow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Lastpost",
+              "displayName": "Lastpost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Total post",
+              "displayName": "Total post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post1",
+              "displayName": "post1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post2",
+              "displayName": "post2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post3",
+              "displayName": "post3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post4",
+              "displayName": "post4",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post5",
+              "displayName": "post5",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1168,
+        1824
+      ],
+      "id": "f6dad5ab-d613-4500-99b3-0efa959c53e5",
+      "name": "Update latest posts",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "avZtFTxBgelyc70W",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Searching With Hashtag\n",
+        "height": 720,
+        "width": 1400,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1440,
+        720
+      ],
+      "typeVersion": 1,
+      "id": "6e865289-25bb-4c96-8aa1-c7dd1273342d",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n  const posts = item.json.latestPosts || [];\n  const latestPost = posts.reduce((a, b) =>\n    new Date(a.timestamp) > new Date(b.timestamp) ? a : b\n  );\n\n  const details = {\n    url: latestPost.url,\n    likeCount: latestPost.likesCount,\n    commentCount: latestPost.commentsCount\n  };\n\n  return {\n    json: {\n      username: item.json.username,\n      latestPostDetails: JSON.stringify(details)\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        1200
+      ],
+      "id": "918d171b-bf1a-4def-9d18-5952c1b8b1d4",
+      "name": "Last post1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.all();\n\n// Extract usernames into an array\nconst usernames = data.map(item => item.json.Username);\n\n// Return a single item with the full array\nreturn [\n  {\n    json: {\n      usernames: usernames\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        1008
+      ],
+      "id": "dea66080-38b3-4631-b71d-8f1db5106385",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        1744
+      ],
+      "id": "5a21f9e9-10fc-4c70-85e0-62bfbd77bdad",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "xLSQRABRBCRfmWjf",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nfor (const item of items) {\n  const posts = item.json.latestPosts || [];\n\n  if (!posts.length) {\n    item.json.lastPost = null;\n    continue;\n  }\n\n  // Find the latest post using ISO `timestamp`\n  const lastPost = posts.reduce((latest, current) => {\n    return new Date(current.timestamp) > new Date(latest.timestamp) ? current : latest;\n  });\n\n  // Save it in the item's JSON\n  item.json.lastPost = lastPost;\n}\n\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        1200
+      ],
+      "id": "17741b96-093b-42fb-ab31-3e6d5611caeb",
+      "name": "Getting post"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g",
+          "mode": "list",
+          "cachedResultName": "Instagram_Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RXF1QWR_kHnmB0N38DPz48v-3b0-VcXmZFcHBnEPutg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Username": "={{ $json.username }}",
+            "Lastpost": "={{ $json.latestPostDetails }}"
+          },
+          "matchingColumns": [
+            "Username"
+          ],
+          "schema": [
+            {
+              "id": "Username",
+              "displayName": "Username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Bio",
+              "displayName": "Bio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "FullName",
+              "displayName": "FullName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "InstagramUrl",
+              "displayName": "InstagramUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Follower",
+              "displayName": "Follower",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "follow",
+              "displayName": "follow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Lastpost",
+              "displayName": "Lastpost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Total post",
+              "displayName": "Total post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post1",
+              "displayName": "post1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post2",
+              "displayName": "post2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post3",
+              "displayName": "post3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post4",
+              "displayName": "post4",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post5",
+              "displayName": "post5",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        2048,
+        1200
+      ],
+      "id": "a1365a75-ad99-46f8-8107-c395603b416e",
+      "name": "Update latest post",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "avZtFTxBgelyc70W",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g",
+          "mode": "list",
+          "cachedResultName": "Instagram_Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 575853952,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit#gid=575853952"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Username": "={{ $json.username }}",
+            "post1": "={{ $json.post1 }}",
+            "post2": "={{ $json.post2 }}",
+            "post3": "={{ $json.post3 }}",
+            "post4": "={{ $json.post4 }}",
+            "post5": "={{ $json.post5 }}"
+          },
+          "matchingColumns": [
+            "Username"
+          ],
+          "schema": [
+            {
+              "id": "Username",
+              "displayName": "Username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Bio",
+              "displayName": "Bio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "FullName",
+              "displayName": "FullName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "InstagramUrl",
+              "displayName": "InstagramUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Follower",
+              "displayName": "Follower",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "follow",
+              "displayName": "follow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Lastpost",
+              "displayName": "Lastpost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Total post",
+              "displayName": "Total post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post1",
+              "displayName": "post1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "post2",
+              "displayName": "post2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "post3",
+              "displayName": "post3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "post4",
+              "displayName": "post4",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "post5",
+              "displayName": "post5",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        2608,
+        1008
+      ],
+      "id": "0bfe026e-2f26-46e6-ae09-008f0e121fca",
+      "name": "Update post",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "avZtFTxBgelyc70W",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nreturn items.map(item => {\n  const data = item.json;\n  const result = {\n    username: data.username,\n  };\n\n  for (let i = 0; i < 5; i++) {\n    const post = data.top5Posts[i] || {};\n    result[`post${i + 1}`] = {\n      url: post.url || '',\n      likes: post.likesCount || 0,\n      comments: post.commentsCount || 0\n    };\n  }\n\n  return { json: result };});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        1008
+      ],
+      "id": "7784afb8-aa05-44cd-9454-9741b0efe68a",
+      "name": "Post seprating"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(user => {\n  const posts = user.json.latestPosts || [];\n\n  // Sort the user's posts by likesCount descending\n  const top5 = posts\n    .sort((a, b) => b.likesCount - a.likesCount)\n    .slice(0, 5);\n\n  // Attach user info and top 5 posts\n  return {\n    json: {\n      userId: user.json.userId, // Or use username, etc.\n      username: user.json.username, // Or use username, etc.\n      top5Posts: top5,\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2208,
+        1008
+      ],
+      "id": "652b70da-2896-4979-8fde-71b36625739e",
+      "name": "Top like post"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/dSCLg0C3YEZ83HzYX/run-sync-get-dataset-items",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Your Api"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1760,
+        1008
+      ],
+      "id": "6c0244aa-3ff5-4c3b-83fc-ed130eb04d52",
+      "name": "Searching Profile"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.item.json.output.result; \n// Example input: \"toptrendingvideos viralvideos storyideas\"\n\nconst hashtags = input\n  .split(',')\n  .map(tag => tag.trim())\n  .filter(tag => tag.length > 0);\n\nreturn [\n  {\n    json: {\n      hashtags: hashtags,\n      resultsLimit: 30,\n      resultsType: \"stories\"\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2144,
+        784
+      ],
+      "id": "71dd13cf-ec8f-4c65-8b35-9a04419d3feb",
+      "name": "Cleaning"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g",
+          "mode": "list",
+          "cachedResultName": "Instagram_Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 575853952,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit#gid=575853952"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Username": "={{ $json.ownerUsername }}"
+          },
+          "matchingColumns": [
+            "Username"
+          ],
+          "schema": [
+            {
+              "id": "Username",
+              "displayName": "Username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Bio",
+              "displayName": "Bio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "FullName",
+              "displayName": "FullName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "InstagramUrl",
+              "displayName": "InstagramUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Follower",
+              "displayName": "Follower",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "follow",
+              "displayName": "follow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Lastpost",
+              "displayName": "Lastpost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Total post",
+              "displayName": "Total post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post1",
+              "displayName": "post1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post2",
+              "displayName": "post2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post3",
+              "displayName": "post3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post4",
+              "displayName": "post4",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post5",
+              "displayName": "post5",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2608,
+        784
+      ],
+      "id": "06ea493e-a8b6-4725-8091-6ea08b5f22ff",
+      "name": "Save Reel",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "avZtFTxBgelyc70W",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/reGe1ST3OBgYZSsZJ/run-sync-get-dataset-items",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Your Api"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2368,
+        784
+      ],
+      "id": "0818352f-e281-43cd-8b25-1bd56272cd95",
+      "name": "Searching Posts"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"result\":\"\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -464,
+        1728
+      ],
+      "id": "6fc426a7-0fca-4fc3-bcf3-67f93ec6bd50",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=\nUser input: {{ $json.message.text }}\n",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Convert user input into meaning full hashtag for scraping video related to that topic.\nyou can provide me hashtag of this input that using that i can scrap video.\nOr if the input contains hashtag already just use that. nothing else.\nReturn output in this formate\nGenerat hashtage like human.\n{\nresult:\"hasttag1,hashtag2,hashtag3\"\n}\n\nRequirements:{\n    Return 3 or same hashtags if user gives in input \n    and with out any symbol.\n}\n\nRemember don't include '#' symbol while giving output."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1728,
+        784
+      ],
+      "id": "8a21f031-1e71-4cf7-bc37-81379b12d5a8",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an AI agent. Your task is to detect, store, and return usernames based on the user's message. You are connected to two tools: a Google Sheet named \"update\" and another named \"get\".\n\nUserinput:  {{ $json.message.text }}\nuserid: {{ $json.message.chat.id }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Follow these rules:\n\n1. If the user's message contains a username (e.g., phrases like \"user alihassanml\", \"profile cristiano\", \"username john_doe\", etc.):\n   - Extract the username.\n   - Save or update the username in the Google Sheet \"update\", using `userid` as the key.\n   - Return only the extracted username.\n\n2. If the user's message does NOT contain a username:\n   - Look up the username using the `userid` from the Google Sheet \"get\".\n   - If found, return the username.\n   - If not found, return an empty string.\n\n3. If a new username is provided by the user later:\n   - Overwrite the previous username in the \"update\" sheet for that `userid`.\n   - Always return the most recent username.\n\nConstraints:\n- Only return the username string.\n- Make sure any update or retrieval operation interacts with the correct sheet (\"update\" or \"get\") based on the task."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -688,
+        288
+      ],
+      "id": "5901fa74-ed7a-4f88-8c6f-0326851b5383",
+      "name": "Username Agent",
+      "retryOnFail": true,
+      "waitBetweenTries": 500
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g",
+          "mode": "list",
+          "cachedResultName": "Instagram_Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 575853952,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit#gid=575853952"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Username",
+              "lookupValue": "={{ $('Username Agent').item.json.output.username }}"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        704,
+        288
+      ],
+      "id": "76c58415-6c81-4d1d-b189-f2c3b21ef5f3",
+      "name": "Get Top post",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "avZtFTxBgelyc70W",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -240,
+        80
+      ],
+      "id": "d7c0f5a5-2ad1-4c95-ac8e-6c46c17def66",
+      "name": "Combine username"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        48,
+        1632
+      ],
+      "id": "4e515f36-6a67-4d25-8053-dd6ed049d6d3",
+      "name": "Combine Classfier"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.all();\n\n// Extract all usernames from the nested structure\nconst usernames = data.map(item => item.json.output.username);\n\n// Return the array under the key \"usernames\"\nreturn [\n  {\n    json: {\n      usernames: usernames\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        272,
+        1632
+      ],
+      "id": "425776bf-e580-4e1b-9012-4c39634465c4",
+      "name": "mapping username"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g",
+          "mode": "list",
+          "cachedResultName": "Instagram_Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 575853952,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit#gid=575853952"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Username",
+              "lookupValue": "={{ $('Username Agent').item.json.output.username }}"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        704,
+        480
+      ],
+      "id": "a5a54589-0acb-43b0-81e5-44047524e5bf",
+      "name": "Get Last Post",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "avZtFTxBgelyc70W",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g",
+          "mode": "list",
+          "cachedResultName": "Instagram_Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 575853952,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit#gid=575853952"
+        },
+        "clear": "specificRows",
+        "startIndex": 2,
+        "rowsToDelete": 1000
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1520,
+        784
+      ],
+      "id": "ded76770-c3ba-4130-87df-ca15fbb7a166",
+      "name": "Clean User Database",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "avZtFTxBgelyc70W",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"username\": \"\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -368,
+        1392
+      ],
+      "id": "df428664-c5a2-4893-b6a5-fcaaf1bebb3d",
+      "name": "Structured"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -704,
+        1392
+      ],
+      "id": "13fd1c5d-df9d-4c59-8b57-15b67250d0d2",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "I6rsRA15Er4Tklj4",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $('Tele').item.json.message.text }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "follower ",
+              "description": "This looking top follower"
+            },
+            {
+              "category": "Like",
+              "description": "This looking top Like post"
+            },
+            {
+              "category": "Latest",
+              "description": "This looking Latest  post of that user,last post. new post."
+            }
+          ]
+        },
+        "options": {
+          "enableAutoFixing": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        240
+      ],
+      "id": "9f2b794f-f020-4077-a623-351ec584872b",
+      "name": "Classfier follower",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get both inputs from connected previous nodes\nconst [scriptNodeInput] = $input.all();\n\n// Get data from named nodes\nconst scriptData = scriptNodeInput.json.output;\nconst urlData = $('URL Provider').first().json.output;\nconst downloadData = $('Downloading Posts').first().json;\nconst transcribeText = $('Transcribe').first().json.text;\n\n// Combine all into one variable\nconst finalData = {\n  repurposed_script: scriptData.repurposed_script,\n  repurposed_caption: scriptData.repurposed_caption,\n  url: urlData.url,\n  video_url: downloadData.videoUrl,\n  transcribe: transcribeText\n};\n\n// Return wrapped in JSON\nreturn [{ json: { finalData } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        1072
+      ],
+      "id": "f02f1b18-948d-4a8a-9d64-0eab34312d2f",
+      "name": "Convert Data"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g",
+          "mode": "list",
+          "cachedResultName": "Instagram_Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1778440352,
+          "mode": "list",
+          "cachedResultName": "Sheet3",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit#gid=1778440352"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "username": "={{ $('Username Agent').item.json.output.username }}",
+            "url": "={{ $json.finalData.url }}",
+            "script": "={{ $json.finalData.repurposed_script }}",
+            "Transcribe": "={{ $json.finalData.transcribe }}",
+            "Downlaod Url": "={{ $json.finalData.video_url }}",
+            "caption": "={{ $json.finalData.repurposed_caption }}"
+          },
+          "matchingColumns": [
+            "url"
+          ],
+          "schema": [
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "username",
+              "displayName": "username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "script",
+              "displayName": "script",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "caption",
+              "displayName": "caption",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Downlaod Url",
+              "displayName": "Downlaod Url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Transcribe",
+              "displayName": "Transcribe",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        864,
+        1072
+      ],
+      "id": "f65eda74-94e3-4e90-a762-5cb098f376f0",
+      "name": "Adding Data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "avZtFTxBgelyc70W",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get input\nconst inputData = $('Convert Data').first().json.finalData\n\n// Build Telegram-compatible HTML string\nconst htmlMessage = `\n<b>🎬 YouTube Automation - Day One</b>\n\n<b>📜 Script:</b>\n${inputData.repurposed_script}\n\n<b>📝 Caption:</b>\n${inputData.repurposed_caption}\n\n<b>🔗 Instagram Link:</b>\n<a href=\"${inputData.url}\">${inputData.url}</a>\n\n<b>📹 Video Download:</b>\n<a href=\"${inputData.video_url}\">Download Video</a>\n\n<b>🗣 Transcription:</b>\n${inputData.transcribe}\n`.trim();\n\n// Return as a field you can send to Telegram\nreturn [{ json: { html: htmlMessage } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1072,
+        1072
+      ],
+      "id": "a62ff429-78e8-4719-bb98-1f3005f1d1ac",
+      "name": "Send Reply"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Tele').item.json.message.chat.id }}",
+        "text": "={{ $json.html }}",
+        "replyMarkup": "forceReply",
+        "forceReply": {
+          "force_reply": true
+        },
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1232,
+        1072
+      ],
+      "id": "c913ef27-c255-47e4-9af6-f1be5357b4b7",
+      "name": "Replying Back",
+      "webhookId": "ad5ef867-913a-4e16-a64d-3963b601156e",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "Rf1RtOQgG7OaJv1K",
+          "name": "Telegram account Noman"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 2040,
+        "width": 760
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -784,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "2d16fe71-d431-4bd2-b3df-d8bdf1a471b0",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g",
+          "mode": "list",
+          "cachedResultName": "Instagram_Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 575853952,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit#gid=575853952"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Username": "={{ $json.username }}",
+            "Bio": "={{ $json.biography }}",
+            "FullName": "={{ $json.fullName }}",
+            "InstagramUrl": "={{ $json.url }}",
+            "Follower": "={{ $json.followersCount }}",
+            "follow": "={{ $json.followsCount }}",
+            "Total post": "={{ $json.postsCount }}"
+          },
+          "matchingColumns": [
+            "Username"
+          ],
+          "schema": [
+            {
+              "id": "Username",
+              "displayName": "Username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Bio",
+              "displayName": "Bio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "FullName",
+              "displayName": "FullName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "InstagramUrl",
+              "displayName": "InstagramUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Follower",
+              "displayName": "Follower",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "follow",
+              "displayName": "follow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Lastpost",
+              "displayName": "Lastpost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Total post",
+              "displayName": "Total post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "post1",
+              "displayName": "post1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post2",
+              "displayName": "post2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post3",
+              "displayName": "post3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post4",
+              "displayName": "post4",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post5",
+              "displayName": "post5",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        704,
+        1424
+      ],
+      "id": "b4c0254a-0569-42ad-a094-8434962ce9dd",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "avZtFTxBgelyc70W",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g",
+          "mode": "list",
+          "cachedResultName": "Instagram_Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 575853952,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1asKR97N6_JUTrFrJZSqqV-laiqhiFX2vsvz9uofHO9g/edit#gid=575853952"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Username": "={{ $json.username }}",
+            "Bio": "={{ $json.biography }}",
+            "FullName": "={{ $json.fullName }}",
+            "InstagramUrl": "={{ $json.url }}",
+            "Follower": "={{ $json.followersCount }}",
+            "follow": "={{ $json.followsCount }}",
+            "Total post": "={{ $json.postsCount }}"
+          },
+          "matchingColumns": [
+            "Username"
+          ],
+          "schema": [
+            {
+              "id": "Username",
+              "displayName": "Username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Bio",
+              "displayName": "Bio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "FullName",
+              "displayName": "FullName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "InstagramUrl",
+              "displayName": "InstagramUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Follower",
+              "displayName": "Follower",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "follow",
+              "displayName": "follow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Lastpost",
+              "displayName": "Lastpost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Total post",
+              "displayName": "Total post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "post1",
+              "displayName": "post1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post2",
+              "displayName": "post2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post3",
+              "displayName": "post3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post4",
+              "displayName": "post4",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post5",
+              "displayName": "post5",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1968,
+        1008
+      ],
+      "id": "fe905dc4-a90b-4df4-b41f-a9b611be484a",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "avZtFTxBgelyc70W",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Data": {
+      "main": [
+        [
+          {
+            "node": "Top Follower",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Top Follower": {
+      "main": [
+        [
+          {
+            "node": "Top 10  Follower",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Top 10  Follower": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Tele": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Username Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Combine username",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Classfier follower",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Like Post": {
+      "main": [
+        [
+          {
+            "node": "Clean",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Last post": {
+      "main": [
+        [
+          {
+            "node": "Clean and formate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Response Like",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Response Follower",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Help Full AI Reply": {
+      "main": [
+        [
+          {
+            "node": "Response Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Clean and formate": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Category",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Category": {
+      "main": [
+        [
+          {
+            "node": "Classfier follower",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "URL Provider",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Help Full AI Reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Combine Classfier",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Clean User Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OutPut": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Help Full AI Reply",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Help Full AI Reply",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OUTPUT": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "URL Provider",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "URL Provider",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe": {
+      "main": [
+        [
+          {
+            "node": "Transcribe generater",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Output": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Transcribe generater",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Transcribe generater",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe generater": {
+      "main": [
+        [
+          {
+            "node": "Convert Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Video": {
+      "main": [
+        [
+          {
+            "node": "Write",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write": {
+      "main": [
+        [
+          {
+            "node": "Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read": {
+      "main": [
+        [
+          {
+            "node": "Transcribe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "URL Provider": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Downloading Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Downloading Posts": {
+      "main": [
+        [
+          {
+            "node": "Download Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update": {
+      "ai_tool": [
+        [
+          {
+            "node": "Username Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get": {
+      "ai_tool": [
+        [
+          {
+            "node": "Username Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Top like post1": {
+      "main": [
+        [
+          {
+            "node": "Post seprating1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post seprating1": {
+      "main": [
+        [
+          {
+            "node": "Update posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Getting post1": {
+      "main": [
+        [
+          {
+            "node": "Last post2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Last post2": {
+      "main": [
+        [
+          {
+            "node": "Update latest posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Searching specific": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Top like post1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Getting post1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Searching Profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Getting post": {
+      "main": [
+        [
+          {
+            "node": "Last post1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Last post1": {
+      "main": [
+        [
+          {
+            "node": "Update latest post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post seprating": {
+      "main": [
+        [
+          {
+            "node": "Update post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Top like post": {
+      "main": [
+        [
+          {
+            "node": "Post seprating",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Searching Profile": {
+      "main": [
+        [
+          {
+            "node": "Getting post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Top like post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cleaning": {
+      "main": [
+        [
+          {
+            "node": "Searching Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Reel": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Searching Posts": {
+      "main": [
+        [
+          {
+            "node": "Save Reel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Cleaning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Username Agent": {
+      "main": [
+        [
+          {
+            "node": "Combine username",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Combine Classfier",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get Top post": {
+      "main": [
+        [
+          {
+            "node": "Like Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine username": {
+      "main": [
+        [
+          {
+            "node": "Category",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Classfier": {
+      "main": [
+        [
+          {
+            "node": "mapping username",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "mapping username": {
+      "main": [
+        [
+          {
+            "node": "Searching specific",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Last Post": {
+      "main": [
+        [
+          {
+            "node": "Last post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean User Database": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Username Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Username Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classfier follower": {
+      "main": [
+        [
+          {
+            "node": "Get Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Top post",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Last Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Data": {
+      "main": [
+        [
+          {
+            "node": "Adding Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Adding Data": {
+      "main": [
+        [
+          {
+            "node": "Send Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Reply": {
+      "main": [
+        [
+          {
+            "node": "Replying Back",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "287b60a2-e378-4dc7-90a7-5682c260358c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d781785cc92b387d9586bcb00b682ac0a21587ecd0f470f6ad3c828f1905f9f0"
+  },
+  "id": "g840RDpVu3o46fsq",
+  "tags": []
+}
